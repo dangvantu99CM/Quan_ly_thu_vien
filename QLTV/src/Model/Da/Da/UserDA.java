@@ -19,23 +19,14 @@ import java.util.ArrayList;
  * @author tudv
  */
 public class UserDA {
+    
+    public UserDA(){}
 
     private Connection con = ConnectDb.connectDB();
-    private String name;
-    private String address;
-    private int gender;
-    private int masv;
-    private String email;
-    private String phone_number;
-    private String nien_khoa;
-    private String password;
-    private int role;
-    private int id_school;
-    private int id_major;
-    private int id_faculty;
-
+    public static ArrayList<User> listUser;
+   
     public ArrayList<User> getAll() throws SQLException {
-        ArrayList<User> listUser = new ArrayList<User>();
+        listUser = new ArrayList<User>();
 
         String sql = "SELECT * FROM user";
         Statement stmt = (Statement) con.createStatement();
@@ -102,22 +93,21 @@ public class UserDA {
         return result > 0;
     }
     
-    public boolean checkLogin(String masv, String password) throws SQLException{
-        Connection con = ConnectDb.connectDB();
+    public boolean checkLogin(String name, String password) throws SQLException{
         if(con == null){
             System.out.println("Ket noi that bai");
             return false;
         }
-        String sql = "SELECT * FROM user WHERE masv = ? AND password = ?";
+        String sql = "SELECT * FROM user WHERE us_name = ? AND us_pass_word = ?";
         java.sql.PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1, masv);
+        stmt.setString(1, name);
         stmt.setString(2, password);
         ResultSet rs = stmt.executeQuery();
         if (rs.next())
                 return true;
         return false;
     }
-
+    
     public static void main(String[] args) throws SQLException {
         UserDA qe = new UserDA();
         ArrayList<User> listUser = qe.getAll();

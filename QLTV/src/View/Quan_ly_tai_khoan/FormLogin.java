@@ -1,5 +1,6 @@
 package View.Quan_ly_tai_khoan;
 
+import Controller.Quan_ly_tai_khoan.UserController;
 import Model.Da.Da.UserDA;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -46,11 +47,10 @@ public class FormLogin extends JFrame{
     private boolean isLoading = false;
     public static JLabel lblForgetPassword, lblUsername, lblCreateAccount, lblPassword, lblMemory;
     
-    public void setTxtUsername(String name){
-        this.txtUsername.setText(name);
-    }
-
+    public UserController userController;
+    
     public void initFormLogin() {
+        userController = new UserController(this);
         this.setTitle("Đăng nhập");
         this.setSize(780, 442);
         JLabel background = new JLabel(new ImageIcon(ClassLoader.getSystemResource("asset/img/bg_1.jpg")));
@@ -64,24 +64,24 @@ public class FormLogin extends JFrame{
         lblUsername = new JLabel("Tài khoản");
         lblPassword = new JLabel("Mật khẩu");
         btnLogin = new JButton("Đăng nhập");
-        lblMemory = new JLabel("Ghi nhớ mật khẩu");
-        checkBoxMemoryAccount = new JCheckBox();
+        //lblMemory = new JLabel("Ghi nhớ mật khẩu");
+        //checkBoxMemoryAccount = new JCheckBox();
 
         contend.add(lblUsername, "cell 0 0,alignx trailing");
         txtUsername = new JTextField();
-        contend.add(txtUsername, "cell 1 0,growx");
+        contend.add(getTxtUsername(), "cell 1 0,growx");
 
         contend.add(lblPassword, "cell 0 1,alignx trailing");
         txtPassword = new JPasswordField();
-        contend.add(txtPassword, "cell 1 1,growx");
+        contend.add(getTxtPassword(), "cell 1 1,growx");
 
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        p.add(checkBoxMemoryAccount);
-        p.add(lblMemory);
+       // p.add(checkBoxMemoryAccount);
+        //p.add(lblMemory);
 
         //checkBoxMemoryAccount.setPreferredSize(new Dimension(50, 50));
-        checkBoxMemoryAccount.setBackground(new Color(25, 26, 28, 0));
+      //  checkBoxMemoryAccount.setBackground(new Color(25, 26, 28, 0));
 
         p.setBackground(new Color(0f, 0f, 0f, 0f));
         contend.add(p, "cell 1 2,growx");
@@ -91,18 +91,18 @@ public class FormLogin extends JFrame{
         lblForgetPassword.setForeground(Color.BLUE);
         lblCreateAccount.setForeground(Color.BLUE);
 
-        contend.add(lblForgetPassword, "cell 1 3,growx");
-        contend.add(lblCreateAccount, "cell 1 3,growx");
-        contend.add(btnLogin, "cell 1 4,growx");
+        contend.add(lblForgetPassword, "cell 1 2,growx");
+        contend.add(lblCreateAccount, "cell 1 2,growx");
+        contend.add(btnLogin, "cell 1 3,growx");
         
         contend.setBackground(new Color(0f, 0f, 0f, 0f));
         contend.setBorder(BorderFactory.createEmptyBorder(70, 400, 0, 0));
         this.add(contend, BorderLayout.WEST);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setResizable(true);
+        this.setResizable(false);
         this.setVisible(true);
-        //  actionListener();
+        actionListener();
     }
 
     public void actionListener() {
@@ -110,10 +110,9 @@ public class FormLogin extends JFrame{
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UserDA userDa = new UserDA();
                 JDialog f = new JDialog();
                 try {
-                    if (userDa.checkLogin(txtUsername.getText(), txtPassword.getText())) {
+                    if (userController.login(getTxtUsername().getText(), getTxtPassword().getText())) {
                         System.out.println("Login correct !");
                         self.dispose();
                     } else {
@@ -126,20 +125,38 @@ public class FormLogin extends JFrame{
         });
         lblForgetPassword.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                //FormForgotPassWord formForgotPass = new FormForgotPassWord();
+                FormForgotPassWord formForgotPass = new FormForgotPassWord();
             }
         });
         lblCreateAccount.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                //FormCreateAccount formCreateAcount = new FormCreateAccount();
+                try {
+                    FormRegister formRegister = new FormRegister();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 self.dispose();
             }
         });
     }
-    
-    public static void main(String[] args) {
-        FormLogin lo = new FormLogin();
+    /**
+     * @return the txtUsername
+     */
+    public JTextField getTxtUsername() {
+        return txtUsername;
     }
+
+    /**
+     * @return the txtPassword
+     */
+    public JPasswordField getTxtPassword() {
+        return txtPassword;
+    }
+    
+    public void setTxtUsername(String name){
+        this.getTxtUsername().setText(name);
+    }
+    
 
 
 }
